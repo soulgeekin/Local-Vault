@@ -1,0 +1,4 @@
+master.hash
+vault.json
+__pycache__/
+*.pyc
