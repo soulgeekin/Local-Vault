@@ -1,6 +1,9 @@
 import customtkinter as ctk
 from vault import load_vault, add_password, get_password, save_vault
 from vault import is_first_launch, check_master_password, create_master_password
+from vault import derive_key
+
+derived_key = None
 
 ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("blue")
@@ -66,7 +69,7 @@ def open_vault_window():
             def make_reveal(s=site, lbl=pw_label):
                 def reveal():
                     if lbl.cget("text") == "********":
-                        real_pw = get_password(s)
+                        real_pw = get_password(s,derived_key)
                         lbl.configure(text=real_pw)
                     else:
                         lbl.configure(text="********")
@@ -77,7 +80,7 @@ def open_vault_window():
 
             def make_copy(s=site):
                 def copy():
-                    real_pw = get_password(s)
+                    real_pw = get_password(s,derived_key)
                     copy_to_clipboard(real_pw)
                 return copy
 
@@ -108,7 +111,7 @@ def open_vault_window():
         site = new_site_entry.get()
         pw = new_pass_entry.get()
         if site and pw:
-            add_password(site, pw)
+            add_password(site,pw,derived_key)
             new_site_entry.delete(0, "end")
             new_pass_entry.delete(0, "end")
             refresh_site_list()
@@ -131,8 +134,11 @@ def show_login_screen():
 
     def check_password():
         tried_pass = password_entry.get()
-        if check_master_password(tried_pass):
+        success, salt = check_master_password(tried_pass)
+        if success:
             status_label.configure(text="Unlocked!", text_color="green")
+            global derived_key
+            derived_key = derive_key(tried_pass, salt)
             open_vault_window()
         else:
             status_label.configure(text="Wrong Password", text_color="red")
