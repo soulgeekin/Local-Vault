@@ -1,44 +1,42 @@
 # Local Vault
 
-Local Vault is a local, offline password manager built with Python. Your data stays on your computer—there’s no cloud storage, account system, or syncing with external servers. Saved passwords are encrypted, and access to the vault is protected by a salted and hashed master password.
+This is a password tool that works on your own machine. There is no user account. There is no cloud. There is no syncing. Your data stays on your computer.
 
 ## Features
 
-- Works completely offline
-- Encrypts saved passwords using Fernet
-- Protects the master password with salting and hashing
-- Add, view, copy, and delete saved passwords
-- Copy passwords to your clipboard without displaying them
-- Switch between dark and light mode
+- Works offline. Nothing is sent out.
+- You set a master password the first time you open it.
+- After that, you sign in using the same master password each time.
+- The master password is salted and hashed. It is not kept in plain text.
+- The encryption key is not saved as a file. It is created again each login from your master password. PBKDF2 is used with a high iteration count, so there is no extra key to steal.
+- Saved passwords are encrypted with Fernet.
+- You can add, open, copy, and remove saved logins.
+- A copy button lets you get a password without showing it on the screen.
+- There is a dark and light mode switch.
 
-## Running the App
+## How to run
 
-Install the required packages:
+Install the needed packages:
 
-```bash
+```
 pip install customtkinter cryptography
 ```
 
-Then start the application:
+Then start the app:
 
-```bash
+```
 python gui.py
 ```
 
-When you open Local Vault for the first time, you’ll be asked to create a master password. On future launches, you’ll use that password to unlock your vault.
+On the first run, you will be asked to set a master password. Next times are simple. You just log in with that same password.
 
-## Project Files
+## What files are included
 
-- `gui.py` — Handles the application interface
-- `vault.py` — Manages encryption, storage, and vault operations
-- `key.key` — The encryption key created by the application
-- `master.hash` — The hashed master password
-- `vault.json` — Stores the encrypted password data
+- `gui.py` for the app window and controls
+- `vault.py` for the encryption, hashing, and storage parts
+- `master.hash` holds the salted and hashed master password. It is made automatically and is ignored by git
+- `vault.json` holds the encrypted saved entries. It is made automatically and is ignored by git
 
-The last three files are generated automatically and are excluded from Git because they contain your actual key and vault data.
+## Quick note
 
-## Important Note
-
-Local Vault began as a personal project for learning more about encryption, password storage, and GUI development. It uses real encryption and does not store the master password in plain text, but it has not been professionally audited or extensively tested.
-
-It works well as an offline learning project and may be suitable for basic personal use, but you should avoid relying on it for your most important accounts until it has gone through more testing and security review.
+This began as a personal project for learning. I wanted to understand password managers by building one. I have not taken it through a full polish pass yet.
